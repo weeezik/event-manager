@@ -9,6 +9,22 @@ def clean_zipcode(zipcode)
   new_zip = zipcode.prepend("00000")[-5..-1]
 end
 
+def clean_phone_numbers(phone_number)
+  case phone_number
+  when phone_number < 10
+    #bad number
+  when phone_number == 10
+    #good number    
+  when phone_number == 11
+    #if first number is 1, trim it and use the rest as the number
+    # if first number is not 1, assume it is a bad number
+  when phone_number > 11
+    #bad number
+  else
+    puts "Invalid number"
+  end
+end
+
 def legislators_by_zipcode (zip)
   civic_info = Google::Apis::CivicinfoV2::CivicInfoService.new
   civic_info.key = 'AIzaSyClRzDqDh5MsXwnCWi0kOiiBivP6JsSyBw'
@@ -20,11 +36,11 @@ def legislators_by_zipcode (zip)
       roles: ['legislatorUpperBody', 'legislatorLowerBody']
       ).officials
 
-    # legislator_names = legislators.map do |legislator|
-    #   legislator.name
-    # end
+    legislator_names = legislators.map do |legislator|
+      legislator.name
+    end
 
-    # legislators_string = legislator_names.join(", ")
+    legislators_string = legislator_names.join(", ")
   rescue
     'You can find your representatives by visiting www.commoncause.org/take-action/find-elected-officials'
   end
