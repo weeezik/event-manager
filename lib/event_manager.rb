@@ -10,19 +10,16 @@ def clean_zipcode(zipcode)
 end
 
 def clean_phone_numbers(phone_number)
-  case phone_number
-  when phone_number < 10
-    #bad number
-  when phone_number == 10
-    #good number    
-  when phone_number == 11
-    #if first number is 1, trim it and use the rest as the number
-    # if first number is not 1, assume it is a bad number
-  when phone_number > 11
-    #bad number
-  else
-    puts "Invalid number"
-  end
+  new_number = phone_number.gsub(/[()-,.-]/, '').gsub(" ", "")
+  if new_number.size < 10 || new_number.size > 11
+    "Invalid number."
+    elsif new_number.size == 10
+       new_number
+    elsif new_number.size == 11 && new_number.start_with?("1")
+      new_number[1..-1]
+    else
+      "Invalid number."
+    end 
 end
 
 def legislators_by_zipcode (zip)
@@ -68,11 +65,15 @@ contents.each do |row|
   id = row[0]
   name = row[:first_name]
 
+  phone_number = clean_phone_numbers(row[:homephone])
+
   zipcode = clean_zipcode(row[:zipcode])
 
   legislators = legislators_by_zipcode(zipcode)
 
-  form_letter = erb_template.result(binding)
+  # form_letter = erb_template.result(binding)
 
-  save_thank_you_letter(id, form_letter)
+  # save_thank_you_letter(id, form_letter)
+
+  puts "#{name}: #{phone_number}"
 end
